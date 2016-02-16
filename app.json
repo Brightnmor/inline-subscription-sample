@@ -1,0 +1,13 @@
+{
+  "name": "inline-subscription-sample",
+  "description": "A simple, Heroku-deployable sample payments subscription page that uses paystack inline and nodejs.",
+  "repository": "https://github.com/PaystackHQ/inline-subscription-sample",
+  "logo": "https://raw.github.com/yabacon/paystack-php/HEAD/img/paystack.png?raw=true",
+  "keywords": ["node", "paystack", "subscription", "inline"],
+  "env": {
+    "PAYSTACK_SECRET_KEY": {
+      "description": "Your secret key is at https://dashboard.paystack.co/#/settings/developer (it will start with sk_)",
+      "required": true
+    }
+  }
+}

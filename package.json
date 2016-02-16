@@ -1,0 +1,23 @@
+{
+  "name": "inline-subscription-sample",
+  "description": "A simple, Heroku-deployable sample payments subscription page that uses paystack inline and nodejs.",
+  "keywords": ["node", "paystack", "subscription", "inline"],
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "https://github.com/PaystackHQ/inline-subscription-sample",
+  "author": "Ibrahim Lawal",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "dotenv": "^2.0.0",
+    "express": "^4.13.4",
+    "node-uuid": "^1.4.7",
+    "paystack": "^1.1.0"
+  },
+  "engines": {
+    "node": "5.0.0"
+  }
+}
