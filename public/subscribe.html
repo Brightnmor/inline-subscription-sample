@@ -4,6 +4,7 @@
   <title>Provide email and Subscribe Now</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.css" rel="stylesheet" />
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="/libphonenumber-compiled.js"></script>
 </head>
 <body onload="startUp()">
   <div class="container">
@@ -39,6 +40,16 @@
           </div>
         </fieldset>
         <fieldset class="form-group row">
+          <label class="col-sm-3" for="phoneNumber">Phone Number</label>
+          <div class=" col-sm-9">
+            <div class="input-group">
+              <div class="input-group-addon"><input maxlength="2" type="text" name="defaultCountry" id="defaultCountry" size="2" value="NG" /></div>
+              <input class="form-control" id="phoneNumber" name="phoneNumber" required="required" type="text" placeholder="Your Phone Number" />
+            </div>
+          </div>
+          <small class="text-muted col-sm-9 col-sm-offset-3">We'll never share your phone number with anyone else.</small>
+        </fieldset>
+        <fieldset class="form-group row">
           <label class="col-sm-3" for="email">Email Address</label>
           <div class=" col-sm-9">
             <input class="form-control" id="email" required="required" type="email" placeholder="Your Email Address" />
@@ -60,7 +71,9 @@
             <button class="btn btn-secondary" type="button" onclick="validateAndSubscribe()"> Subscribe </button>
           </div>
         </fieldset>
- 
+        <!-- HACK to use Google's libphonenumber for validating phone numbers -->
+        <input type="hidden" name="carrierCode" id="carrierCode" value="" />
+        <textarea id="output" rows="0" cols="0" style="display:none"></textarea>
       </form>
     </div>
   </div>
@@ -69,6 +82,24 @@
     // change this to your public key so you 
     // will no more be prompted
     var public_key = '<YOUR PUBLIC KEY HERE>';
+    
+    /*
+     * Check phone number
+     */
+    function checkPhoneNumber(){
+      // this call populates textarea "output" with a detailed 
+      // description of the analysis of the phone number supplied
+      phoneNumberParser();
+      // check if the text in "output" includes: 
+      // Result from isValidNumberForRegion(): true
+      return $("#output").val().search("Result from isValidNumberForRegion\\(\\): true") > 0;
+    }
+    
+    function extractE164FormatNumber() {
+      var rx = /\nE164 format: (.*)\n/g;
+      var arr = rx.exec($("#output").val());
+      return arr[1]; 
+    }
     
     /*
      * Start up
@@ -118,8 +149,19 @@
         return;
       }
       
+      if(!checkPhoneNumber()){
+        alert("Please provide a valid phone number. And be sure to specify the country code.");
+        return;
+      }
+      var phone = extractE164FormatNumber();
+      if(!phone){
+        alert("Please provide a valid phone number. And be sure to specify the country code.");
+        return;
+      }
+      
+      var validIntervals = ['hourly', 'daily', 'weekly', 'monthly', 'annually'];
       var interval = document.getElementById('interval').value;
-      if(!interval){
+      if(-1 === $.inArray(interval, validIntervals)){
         alert("Please select a valid interval");
         return;
       }
@@ -141,13 +183,19 @@
       processing = true;
       
       // Send the data using post
-      var posting = $.post( "/create-plan", { amount: amountinkobo, interval: interval } );
+      var posting = $.post( "/create-customer-then-plan", { 
+                                  amount: amountinkobo, 
+                                  interval: interval, 
+                                  firstname: firstname, 
+                                  lastname: lastname, 
+                                  phone: phone, 
+                                  email: email } );
  
-      // Put the results in a div
+      // Show inline popup so customer may provide 
+      // card details and subscribe
       posting.done(function( data ) {
-        console.log(data);
         if (data.error){
-          alert(data.error);
+          alert(data.error.message);
           processing = false;
           return;
         }

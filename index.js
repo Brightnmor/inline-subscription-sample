@@ -19,20 +19,34 @@ app.use(bodyParser.urlencoded({   // to support URL-encoded bodies
   extended: true
 }));
 
-app.post('/create-plan', function(req, res) {
+app.post('/create-customer-then-plan', function(req, res) {
     var amount          = req.body.amount,
+        firstname       = req.body.firstname,
+        lastname        = req.body.lastname,
+        email           = req.body.email,
+        phone           = req.body.phone,
         interval        = req.body.interval;
         
-        
-    paystack.plan.create({
-      amount:       amount,      
-      interval:     interval,        
-      name:         '' + (amount/100) + 'naira-' + interval, 
-      description:  '' + (amount/100) + 'NGN ' + interval, 
-      currency:     'NGN'    
-    },function(error, body) {
-        res.send({error:error, body:body});
+    paystack.customer.create({
+          first_name:   firstname,      
+          last_name:    lastname,      
+          email:        email,      
+          phone:        phone       
+    }, function(error, body) {
+        if(error){
+          return res.send({error:error});
+        }
+        paystack.plan.create({
+          amount:       amount,      
+          interval:     interval,        
+          name:         '' + (amount/100) + 'naira-' + interval, 
+          description:  '' + (amount/100) + 'NGN ' + interval, 
+          currency:     'NGN'    
+        },function(error, body) {
+            res.send({error:error, body:body});
+        });
     });
+    
 });
 
 //The 404 Route (ALWAYS Keep this as the last route)
