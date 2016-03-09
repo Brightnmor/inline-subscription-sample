@@ -183,13 +183,9 @@
       processing = true;
       
       // Send the data using post
-      var posting = $.post( "/create-customer-then-plan", { 
+      var posting = $.post( "/create-plan", { 
                                   amount: amountinkobo, 
-                                  interval: interval, 
-                                  firstname: firstname, 
-                                  lastname: lastname, 
-                                  phone: phone, 
-                                  email: email } );
+                                  interval: interval } );
  
       // Show inline popup so customer may provide 
       // card details and subscribe
@@ -199,7 +195,7 @@
           processing = false;
           return;
         }
-        subscribeWithPaystack(email, amountinkobo, firstname, lastname, data.body.data.plan_code);
+        subscribeWithPaystack(email, amountinkobo, firstname, lastname, phone, data.body.data.plan_code);
       });
       
       posting.fail(function() {
@@ -267,12 +263,13 @@
      * 
      * source: https://developers.paystack.co/docs/paystack-inline
      */
-    function subscribeWithPaystack(validatedemail, amountinkobo, firstname, lastname, plan_code){
+    function subscribeWithPaystack(validatedemail, amountinkobo, firstname, lastname, phone, plan_code){
       var handler = PaystackPop.setup({
         key:       public_key,
         email:     validatedemail,
-        firstname: firstname,
-        firstname: firstname,
+        firstname: 'Yabacon',
+        lastname:  lastname,
+        phone:     phone,
         amount:    amountinkobo,
         plan:      plan_code,
         ref:       generateREF(), // This uses a random transaction reference based on the time the "Subscribe" button was clicked.
