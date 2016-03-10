@@ -195,7 +195,11 @@
           processing = false;
           return;
         }
+<<<<<<< HEAD
         subscribeWithPaystack(email, amountinkobo, firstname, lastname, phone, data.body.data.plan_code);
+=======
+        subscribeWithPaystack(email, amountinkobo, firstname, lastname, data.body.data.plan_code);
+>>>>>>> parent of a2eb9cb... Removed firstname and lastname from inline setup
       });
       
       posting.fail(function() {
@@ -263,13 +267,21 @@
      * 
      * source: https://developers.paystack.co/docs/paystack-inline
      */
+<<<<<<< HEAD
     function subscribeWithPaystack(validatedemail, amountinkobo, firstname, lastname, phone, plan_code){
+=======
+    function subscribeWithPaystack(validatedemail, amountinkobo, firstname, lastname, plan_code){
+>>>>>>> parent of a2eb9cb... Removed firstname and lastname from inline setup
       var handler = PaystackPop.setup({
         key:       public_key,
         email:     validatedemail,
         firstname: firstname,
+<<<<<<< HEAD
         lastname:  lastname,
         phone:     phone,
+=======
+        firstname: firstname,
+>>>>>>> parent of a2eb9cb... Removed firstname and lastname from inline setup
         amount:    amountinkobo,
         plan:      plan_code,
         ref:       generateREF(), // This uses a random transaction reference based on the time the "Subscribe" button was clicked.
